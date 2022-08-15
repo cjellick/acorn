@@ -15,6 +15,10 @@ package v1
 
 #EnvVars: *[...string] | {[string]: string}
 
+#Labels: string
+
+#Annotations: string
+
 #Sidecar: {
 	#ContainerBase
 	init: bool | *false
@@ -94,6 +98,8 @@ package v1
 	ports:                          #PortSingle | *[...#Port] | #PortMap
 	[=~"probes|probe"]:             #Probes
 	[=~"depends[oO]n|depends_on"]:  string | *[...string]
+	labels:                         [string]: #Labels
+	annotations:                    [string]: #Annotations
 	permissions: {
 		rules: [...#RuleSpec]
 		clusterRules: [...#RuleSpec]
@@ -124,6 +130,17 @@ package v1
 	protocol:          *"" | "tcp" | "udp" | "http"
 }
 
+// Allowing [resourceType:][resourceName:][some.random/key]
+#ScopedLabelMapKey: =~"^([a-z][-a-z0-9]+:)?([a-z][-a-z0-9]+:)?([a-z][-a-z0-9./]+)?$"
+#ScopedLabelMap: {[#ScopedLabelMapKey]: string}
+#ScopedLabel: {
+	resourceType: =~#DNSName | *""
+	resourceName: =~#DNSName | *""
+	key:          =~"[a-z][-a-z0-9./][a-z]*"
+	value:        string | *""
+}
+
+
 #RuleSpec: {
 	verbs: [...string]
 	apiGroups: [...string]
@@ -140,23 +157,33 @@ package v1
 #AccessMode: "readWriteMany" | "readWriteOnce" | "readOnlyMany"
 
 #Volume: {
+	labels:      [string]: #Labels
+	annotations: [string]: #Annotations
 	class:       string | *""
 	size:        int | *10 | string
 	accessModes: [#AccessMode, ...#AccessMode] | #AccessMode | *"readWriteOnce"
 }
 
+#SecretBase: {
+	labels:       [string]: #Labels
+	annotations:  [string]: #Annotations
+}
+
 #SecretOpaque: {
+	#SecretBase
 	type: "opaque"
 	params?: [string]: _
 	data: [string]:    string
 }
 
 #SecretTemplate: {
+	#SecretBase
 	type: "template"
 	data: [string]: string
 }
 
 #SecretToken: {
+	#SecretBase
 	type: "token"
 	params: {
 		// The character set used in the generated string
@@ -170,6 +197,7 @@ package v1
 }
 
 #SecretBasicAuth: {
+	#SecretBase
 	type: "basic"
 	data: {
 		username?: string
@@ -178,6 +206,7 @@ package v1
 }
 
 #SecretGenerated: {
+	#SecretBase
 	type: "generated"
 	params: {
 		job:    string
@@ -206,6 +235,8 @@ package v1
 } | string
 
 #Acorn: {
+	labels:                *[...#ScopedLabel] | #ScopedLabelMap
+	annotations:           *[...#ScopedLabel] | #ScopedLabelMap
 	image?:                string
 	build?:                string | #AcornBuild
 	ports:                 #PortSingle | *[...#Port] | #PortMap
@@ -235,4 +266,6 @@ package v1
 	volumes: [=~#DNSName]:    #Volume
 	secrets: [=~#DNSName]:    #Secret
 	acorns: [=~#DNSName]:     #Acorn
+	labels: [string]: #Labels
+	annotations: [string]: #Annotations
 }

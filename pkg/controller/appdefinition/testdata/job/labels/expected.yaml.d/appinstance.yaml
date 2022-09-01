@@ -27,6 +27,14 @@ spec:
       resourceName: ""
       key: "bad2"
       value: "value"
+    - resourceType: ""
+      resourceName: ""
+      key: "acorn.io/foo"
+      value: "shouldbeignored"
+    - resourceType: ""
+      resourceName: ""
+      key: "acorn.io/job-name"
+      value: "shouldbeignored"
   annotations:
     - resourceType: ""
       resourceName: ""
@@ -40,13 +48,25 @@ spec:
       resourceName: "job1"
       key: "job1a"
       value: "value"
+    - resourceType: ""
+      resourceName: ""
+      key: "acorn.io/foo"
+      value: "shouldbeignored"
+    - resourceType: ""
+      resourceName: ""
+      key: "acorn.io/job-name"
+      value: "shouldbeignored"
 status:
   namespace: app-created-namespace
   appSpec:
     labels:
       global2: "value"
+      "acorn.io/foo": "shouldbeignored2"
+      "acorn.io/job-name": "shouldbeignored2"
     annotations:
       global2a: "value"
+      "acorn.io/foo": "shouldbeignored2"
+      "acorn.io/job-name": "shouldbeignored2"
     jobs:
       job1:
         labels:

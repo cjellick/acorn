@@ -105,7 +105,7 @@ func GatherScoped(resourceName, resourceType string, globalLabels, resourceLabel
 			} else if scopedLabel.ResourceName == resourceName {
 				m[scopedLabel.Key] = scopedLabel.Value
 			}
-		} else if scopedLabel.ResourceType == resourceType {
+		} else if strings.EqualFold(scopedLabel.ResourceType, resourceType) {
 			if scopedLabel.ResourceName == "" || scopedLabel.ResourceName == resourceName {
 				m[scopedLabel.Key] = scopedLabel.Value
 			}

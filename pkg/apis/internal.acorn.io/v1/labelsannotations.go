@@ -56,7 +56,7 @@ func parseScopedLabel(k, v string) (ScopedLabel, error) {
 	case 1:
 		key = scopeAndKeyParts[0]
 	case 2:
-		scopePart := canonicalTypes[scopeAndKeyParts[0]]
+		scopePart := canonicalTypes[strings.ToLower(scopeAndKeyParts[0])]
 		if scopePart != "" {
 			resourceType = scopePart
 		} else {
@@ -64,7 +64,7 @@ func parseScopedLabel(k, v string) (ScopedLabel, error) {
 		}
 		key = scopeAndKeyParts[1]
 	case 3:
-		scopeTypePart := canonicalTypes[scopeAndKeyParts[0]]
+		scopeTypePart := canonicalTypes[strings.ToLower(scopeAndKeyParts[0])]
 		if scopeTypePart != "" {
 			resourceType = scopeTypePart
 		} else {
@@ -93,7 +93,7 @@ func canonicalResourceType(rType string) (string, error) {
 	if rType == "" {
 		return rType, nil
 	}
-	normalized := canonicalTypes[rType]
+	normalized := canonicalTypes[strings.ToLower(rType)]
 	if normalized == "" {
 		return "", fmt.Errorf("unrecognized scope resourceType [%v]", rType)
 	}

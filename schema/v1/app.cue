@@ -15,10 +15,6 @@ package v1
 
 #EnvVars: *[...string] | {[string]: string}
 
-#Labels: string
-
-#Annotations: string
-
 #Sidecar: {
 	#ContainerBase
 	init: bool | *false
@@ -26,12 +22,16 @@ package v1
 
 #Container: {
 	#ContainerBase
+	labels:                       [string]: string
+	annotations:                  [string]: string
 	scale?: >=0
 	sidecars: [string]: #Sidecar
 }
 
 #Job: {
 	#ContainerBase
+	labels:                       [string]: string
+	annotations:                  [string]: string
 	schedule: string | *""
 	sidecars: [string]: #Sidecar
 }
@@ -98,8 +98,6 @@ package v1
 	ports:                          #PortSingle | *[...#Port] | #PortMap
 	[=~"probes|probe"]:             #Probes
 	[=~"depends[oO]n|depends_on"]:  string | *[...string]
-	labels:                         [string]: #Labels
-	annotations:                    [string]: #Annotations
 	permissions: {
 		rules: [...#RuleSpec]
 		clusterRules: [...#RuleSpec]
